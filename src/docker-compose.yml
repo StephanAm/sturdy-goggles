@@ -1,0 +1,57 @@
+version: '3'
+services:
+  mqtt:
+    container_name: mqtt
+    # image:  eclipse-mosquitto
+    restart: unless-stopped
+    build: ./mosquitto
+    volumes:
+      - ../data/mosquitto/persistence:/mosquitto/data
+    ports:
+      - "9001:9001"
+      - "1883:1883"
+    networks:
+      - localnet
+
+  nodered:
+    restart: unless-stopped
+    container_name: nodered
+    depends_on:
+      - mqtt
+    # image: nodered/node-red
+    build: ./node_red
+    ports:
+      - "1880:1880"
+    volumes:
+      - "../data/node-red:/data"
+    user: "0"
+    networks:
+      - localnet
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+    volumes:
+      - ../data/homeautomation/homeassistant/config:/config
+      - ../data/localtime:/etc/localtime:ro
+    privileged: true
+    networks:
+      - localnet
+
+  reverse_proxy:
+    restart: unless-stopped
+    build: ./reverse_proxy
+    ports:
+        - "80:80"
+    depends_on:
+      - nodered
+      - homeassistant
+    networks:
+      - localnet
+    volumes:
+      - ./reverse_proxy/content/:/etc/nginx/html/
+networks:
+  localnet:
