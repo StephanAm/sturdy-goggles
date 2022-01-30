@@ -42,6 +42,7 @@ services:
       - localnet
 
   reverse_proxy:
+    container_name: reverse_proxy
     restart: unless-stopped
     build: ./reverse_proxy
     ports:
