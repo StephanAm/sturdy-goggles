@@ -35,7 +35,7 @@ services:
     ports:
       - "8123:8123"
     volumes:
-      - ../data/homeautomation/homeassistant/config:/config
+      - ../data/homeassistant/config:/config
       - ../data/localtime:/etc/localtime:ro
     privileged: true
     networks:
