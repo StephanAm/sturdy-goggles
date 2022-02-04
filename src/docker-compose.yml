@@ -37,7 +37,7 @@ services:
     volumes:
       - ../data/homeassistant/config:/config
       - ../data/localtime:/etc/localtime:ro
-    privileged: true
+    # privileged: true
     networks:
       - localnet
 
